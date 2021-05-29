@@ -3,12 +3,13 @@ import axios from 'axios';
 
 export default createStore({
   state: {
-    employees: []
+    employees: [],
+    paramsToInsert: {}
   },
   mutations: {
     SET_EMPLOYEES: (state, employees) => {
-      console.log(employees);
       state.employees = employees
+      state.paramsToInsert = {};
     }
   },
   actions: {
@@ -20,10 +21,20 @@ export default createStore({
           return res.data.data
         })
         .catch(error => {
-          console.log(error)
-          return error
+          return alert(error);
         })
-    }
+    },
+    async CREATE_EMPLOYEE({ state, commit }) {
+      axios.post('http://localhost:3000/users/employee', state.paramsToInsert)
+      .then(res => {
+        console.log(res.data);
+        commit('SET_EMPLOYEES', res.data.data)
+        return res.data.data
+      })
+      .catch(error => {
+        return alert(error);
+      })
+  },
   },
   getters: {
     EMPLOYEES (state) {
